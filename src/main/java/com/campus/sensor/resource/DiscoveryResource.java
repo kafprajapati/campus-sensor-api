@@ -27,14 +27,17 @@ public class DiscoveryResource {
         response.put("name", "Campus Sensor API");
         response.put("version", "1.0");
         response.put("description", "REST API for managing campus rooms and IoT sensors");
+        
         Map<String, String> contact = new LinkedHashMap<>();
         contact.put("name", "API Administrator");
         contact.put("email", "admin@campus.ac.uk");
         response.put("contact", contact);
+        
         Map<String, String> resources = new LinkedHashMap<>();
         resources.put("rooms", "/api/v1/rooms");
         resources.put("sensors", "/api/v1/sensors");
         response.put("resources", resources);
+        
         return Response.ok(response).build();
     }
 }
