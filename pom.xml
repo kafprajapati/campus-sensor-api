@@ -19,12 +19,12 @@
       <version>2.41</version>
     </dependency>
     <dependency>
-        <groupId>org.glassfish.jersey.inject</groupId>
+      <groupId>org.glassfish.jersey.inject</groupId>
       <artifactId>jersey-hk2</artifactId>
       <version>2.41</version>
     </dependency>
     <dependency>
-      <groupId>org.glassfish.jersey.media</groupId>
+        <groupId>org.glassfish.jersey.media</groupId>
       <artifactId>jersey-media-json-jackson</artifactId>
       <version>2.41</version>
     </dependency>
@@ -45,4 +45,4 @@
       </plugin>
     </plugins>
   </build>
-</project>
+</project> 
