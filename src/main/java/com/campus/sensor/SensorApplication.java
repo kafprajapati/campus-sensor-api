@@ -8,6 +8,10 @@ package com.campus.sensor;
  *
  * @author kafin
  */
-public class SensorApplication {
-    
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+@ApplicationPath("/api/v1")
+public class SensorApplication extends Application {
 }
