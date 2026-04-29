@@ -18,8 +18,10 @@ public class Main {
     public static final String BASE_URI = "http://localhost:8080/";
 
     public static void main(String[] args) throws Exception {
-        ResourceConfig config = new ResourceConfig().packages("com.campus.sensor");
-        HttpServer server = GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), config);
+        ResourceConfig config = new ResourceConfig()
+                .packages("com.campus.sensor");
+        HttpServer server = GrizzlyHttpServerFactory
+                .createHttpServer(URI.create(BASE_URI), config);
         System.out.println("===============================================");
         System.out.println("  Campus Sensor API is running!");
         System.out.println("  URL: " + BASE_URI + "api/v1");

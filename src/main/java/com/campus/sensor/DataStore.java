@@ -21,6 +21,5 @@ public class DataStore {
     public static final Map<String, Room> rooms = new LinkedHashMap<>();
     public static final Map<String, Sensor> sensors = new LinkedHashMap<>();
     public static final Map<String, List<SensorReading>> readings = new LinkedHashMap<>();
-    
     private DataStore() {}
 }

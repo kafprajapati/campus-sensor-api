@@ -45,7 +45,8 @@ public class RoomResource {
         Room room = DataStore.rooms.get(roomId);
         if (room == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"message\":\"Room not found: " + roomId + "\"}").build();
+                    .entity("{\"message\":\"Room not found: " + roomId + "\"}")
+                    .build();
         }
         return Response.ok(room).build();
     }
@@ -56,18 +57,17 @@ public class RoomResource {
         Room room = DataStore.rooms.get(roomId);
         if (room == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"message\":\"Room not found: " + roomId + "\"}").build();
+                    .entity("{\"message\":\"Room not found: " + roomId + "\"}")
+                    .build();
         }
-        
         long sensorCount = DataStore.sensors.values().stream()
-                .filter(s -> roomId.equals(s.getRoomId()))
-                .count();
-        
+                .filter(s -> roomId.equals(s.getRoomId())).count();
         if (sensorCount > 0) {
             throw new RoomNotEmptyException(roomId, (int) sensorCount);
         }
-        
         DataStore.rooms.remove(roomId);
-        return Response.ok().entity("{\"message\":\"Room " + roomId + " deleted.\"}").build();
+        return Response.ok()
+                .entity("{\"message\":\"Room " + roomId + " deleted successfully.\"}")
+                .build();
     }
 }
