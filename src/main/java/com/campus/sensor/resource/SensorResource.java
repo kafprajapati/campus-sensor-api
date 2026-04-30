@@ -10,7 +10,7 @@ package com.campus.sensor.resource;
  */
 
 import com.campus.sensor.DataStore;
-import com.campus.sensor.exception.LinkedResourceNotFoundException;
+import com.campus.sensor.model.ErrorResponse;
 import com.campus.sensor.model.Sensor;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -39,7 +39,12 @@ public class SensorResource {
     @POST
     public Response createSensor(Sensor sensor) {
         if (!DataStore.rooms.containsKey(sensor.getRoomId())) {
-            throw new LinkedResourceNotFoundException("Room", sensor.getRoomId());
+            return Response.status(422)
+                    .entity(new ErrorResponse(422, "Unprocessable Entity",
+                        "The referenced Room with id '" + sensor.getRoomId() +
+                        "' does not exist. Please create the Room before linking resources to it."))
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
         }
         if (sensor.getSensorId() == null || sensor.getSensorId().isEmpty()) {
             sensor.setSensorId(UUID.randomUUID().toString());
@@ -58,7 +63,8 @@ public class SensorResource {
         Sensor sensor = DataStore.sensors.get(sensorId);
         if (sensor == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"message\":\"Sensor not found: " + sensorId + "\"}")
+                    .entity(new ErrorResponse(404, "Not Found", "Sensor not found: " + sensorId))
+                    .type(MediaType.APPLICATION_JSON)
                     .build();
         }
         return Response.ok(sensor).build();

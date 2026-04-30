@@ -10,7 +10,7 @@ package com.campus.sensor.resource;
  */
 
 import com.campus.sensor.DataStore;
-import com.campus.sensor.exception.RoomNotEmptyException;
+import com.campus.sensor.model.ErrorResponse;
 import com.campus.sensor.model.Room;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -45,7 +45,8 @@ public class RoomResource {
         Room room = DataStore.rooms.get(roomId);
         if (room == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"message\":\"Room not found: " + roomId + "\"}")
+                    .entity(new ErrorResponse(404, "Not Found", "Room not found: " + roomId))
+                    .type(MediaType.APPLICATION_JSON)
                     .build();
         }
         return Response.ok(room).build();
@@ -57,17 +58,29 @@ public class RoomResource {
         Room room = DataStore.rooms.get(roomId);
         if (room == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"message\":\"Room not found: " + roomId + "\"}")
+                    .entity(new ErrorResponse(404, "Not Found", "Room not found: " + roomId))
+                    .type(MediaType.APPLICATION_JSON)
                     .build();
         }
+
         long sensorCount = DataStore.sensors.values().stream()
-                .filter(s -> roomId.equals(s.getRoomId())).count();
+                .filter(s -> roomId.equals(s.getRoomId()))
+                .count();
+
         if (sensorCount > 0) {
-            throw new RoomNotEmptyException(roomId, (int) sensorCount);
+            return Response.status(Response.Status.CONFLICT)
+                    .entity(new ErrorResponse(409, "Conflict",
+                        "Room '" + roomId + "' cannot be deleted because it still has "
+                        + sensorCount + " active sensor(s) assigned to it."))
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
         }
+
         DataStore.rooms.remove(roomId);
         return Response.ok()
-                .entity("{\"message\":\"Room " + roomId + " deleted successfully.\"}")
+                .entity(new ErrorResponse(200, "OK",
+                        "Room " + roomId + " deleted successfully."))
+                .type(MediaType.APPLICATION_JSON)
                 .build();
     }
 }

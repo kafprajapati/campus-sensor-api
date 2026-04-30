@@ -21,7 +21,8 @@ class RoomNotEmptyExceptionMapper implements ExceptionMapper<RoomNotEmptyExcepti
     public Response toResponse(RoomNotEmptyException ex) {
         return Response.status(Response.Status.CONFLICT)
                 .entity(new ErrorResponse(409, "Conflict", ex.getMessage()))
-                .type(MediaType.APPLICATION_JSON).build();
+                .type(MediaType.APPLICATION_JSON)
+                .build();
     }
 }
 
@@ -32,7 +33,8 @@ class LinkedResourceNotFoundExceptionMapper
     public Response toResponse(LinkedResourceNotFoundException ex) {
         return Response.status(422)
                 .entity(new ErrorResponse(422, "Unprocessable Entity", ex.getMessage()))
-                .type(MediaType.APPLICATION_JSON).build();
+                .type(MediaType.APPLICATION_JSON)
+                .build();
     }
 }
 
@@ -42,7 +44,8 @@ class SensorUnavailableExceptionMapper implements ExceptionMapper<SensorUnavaila
     public Response toResponse(SensorUnavailableException ex) {
         return Response.status(Response.Status.FORBIDDEN)
                 .entity(new ErrorResponse(403, "Forbidden", ex.getMessage()))
-                .type(MediaType.APPLICATION_JSON).build();
+                .type(MediaType.APPLICATION_JSON)
+                .build();
     }
 }
 
@@ -53,6 +56,18 @@ class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
 
     @Override
     public Response toResponse(Throwable ex) {
+        // Let RuntimeExceptions that have specific mappers pass through
+        if (ex instanceof RoomNotEmptyException) {
+            return new RoomNotEmptyExceptionMapper().toResponse((RoomNotEmptyException) ex);
+        }
+        if (ex instanceof LinkedResourceNotFoundException) {
+            return new LinkedResourceNotFoundExceptionMapper()
+                    .toResponse((LinkedResourceNotFoundException) ex);
+        }
+        if (ex instanceof SensorUnavailableException) {
+            return new SensorUnavailableExceptionMapper()
+                    .toResponse((SensorUnavailableException) ex);
+        }
         LOGGER.severe("Unhandled exception: " + ex.getMessage());
         java.io.StringWriter sw = new java.io.StringWriter();
         ex.printStackTrace(new java.io.PrintWriter(sw));
@@ -60,6 +75,7 @@ class GlobalExceptionMapper implements ExceptionMapper<Throwable> {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                 .entity(new ErrorResponse(500, "Internal Server Error",
                         "An unexpected error occurred. Please contact the API administrator."))
-                .type(MediaType.APPLICATION_JSON).build();
+                .type(MediaType.APPLICATION_JSON)
+                .build();
     }
 }

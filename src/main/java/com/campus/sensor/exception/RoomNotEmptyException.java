@@ -12,11 +12,11 @@ package com.campus.sensor.exception;
 public class RoomNotEmptyException extends RuntimeException {
     private final String roomId;
     private final int sensorCount;
-
+    
     public RoomNotEmptyException(String roomId, int sensorCount) {
         super(String.format(
-            "Room '%s' cannot be deleted because it still has %d active sensor(s) assigned to it.",
-            roomId, sensorCount));
+                "Room '%s' cannot be deleted because it still has %d active sensor(s) assigned to it.", 
+                roomId, sensorCount));
         this.roomId = roomId;
         this.sensorCount = sensorCount;
     }

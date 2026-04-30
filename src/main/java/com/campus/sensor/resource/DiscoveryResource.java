@@ -17,6 +17,10 @@ import javax.ws.rs.core.Response;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+//@Path("/api/v1")
+//@Produces(MediaType.APPLICATION_JSON)
+//public class DiscoveryResource {
+
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 public class DiscoveryResource {

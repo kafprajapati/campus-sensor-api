@@ -9,6 +9,7 @@ package com.campus.sensor;
  * @author kafin
  */
 
+import com.campus.sensor.filter.ApiLoggingFilter;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
@@ -19,12 +20,17 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         ResourceConfig config = new ResourceConfig()
-                .packages("com.campus.sensor");
+                .packages("com.campus.sensor.resource")
+                .packages("com.campus.sensor.exception")
+                .packages("com.campus.sensor.filter")
+                .register(ApiLoggingFilter.class);
+
         HttpServer server = GrizzlyHttpServerFactory
                 .createHttpServer(URI.create(BASE_URI), config);
+
         System.out.println("===============================================");
         System.out.println("  Campus Sensor API is running!");
-        System.out.println("  URL: " + BASE_URI + "api/v1");
+        System.out.println("  URL: " + BASE_URI);
         System.out.println("  Press ENTER to stop the server...");
         System.out.println("===============================================");
         System.in.read();

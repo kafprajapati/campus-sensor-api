@@ -10,7 +10,7 @@ package com.campus.sensor.resource;
  */
 
 import com.campus.sensor.DataStore;
-import com.campus.sensor.exception.SensorUnavailableException;
+import com.campus.sensor.model.ErrorResponse;
 import com.campus.sensor.model.Sensor;
 import com.campus.sensor.model.SensorReading;
 import javax.ws.rs.*;
@@ -34,7 +34,8 @@ public class SensorReadingResource {
     public Response getReadings() {
         if (!DataStore.sensors.containsKey(sensorId)) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"message\":\"Sensor not found: " + sensorId + "\"}")
+                    .entity(new ErrorResponse(404, "Not Found", "Sensor not found: " + sensorId))
+                    .type(MediaType.APPLICATION_JSON)
                     .build();
         }
         List<SensorReading> history = DataStore.readings
@@ -47,12 +48,20 @@ public class SensorReadingResource {
         Sensor sensor = DataStore.sensors.get(sensorId);
         if (sensor == null) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("{\"message\":\"Sensor not found: " + sensorId + "\"}")
+                    .entity(new ErrorResponse(404, "Not Found", "Sensor not found: " + sensorId))
+                    .type(MediaType.APPLICATION_JSON)
                     .build();
         }
+
         if ("MAINTENANCE".equalsIgnoreCase(sensor.getStatus())) {
-            throw new SensorUnavailableException(sensorId, sensor.getStatus());
+            return Response.status(Response.Status.FORBIDDEN)
+                    .entity(new ErrorResponse(403, "Forbidden",
+                        "Sensor '" + sensorId + "' is currently in 'MAINTENANCE' status " +
+                        "and cannot accept new readings. Please bring the sensor back online."))
+                    .type(MediaType.APPLICATION_JSON)
+                    .build();
         }
+
         if (reading.getReadingId() == null || reading.getReadingId().isEmpty()) {
             reading.setReadingId(UUID.randomUUID().toString());
         }
