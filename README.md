@@ -12,4 +12,4 @@ A RESTful API for managing campus rooms and IoT sensors, built with JAX-RS (Jers
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | / | Discovery endpoint |
+| GET |  / | Discovery endpoint |
