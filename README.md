@@ -97,59 +97,47 @@ curl -X GET http://localhost:8080/rooms/{roomId}
 ```bash
 curl -X POST http://localhost:8080/sensors \
    -H "Content-Type: application/json" \
-   -d '{"roomId": "{your-room-id}", "type": "TEMPERATURE", "status":"ACTIVE"}'
+   -d '{"roomId": "your-room-id", "type": "TEMPERATURE", "status":"ACTIVE"}'
 ```
 
 **6. Filter sensors by type**
 ```bash
 curl -X GET "http://localhost:8080/sensors?type=TEMPERATURE"
 ```
-
-## Sample API Requests
-
-**1. Discovery**
-GET http://localhost:8080/
-
-**2. Create a room**
-POST http://localhost:8080/rooms
-
-Body:
+**7. Post a reading**
+```bash
+curl -X POST http://localhost:8080/sensors/{sensorId}/readings \
+  -H "Content-Type: application/json" \
+  -d '{"value":23.5,"unit":"celsius"}'
 ```
-{
-    "name": "Test Room",
-    "location": "Bldg1",
-    "floor": 1
-}
+**8. Get reading history**
+```bash
+curl -X GET http://localhost:8080/sensors/{sensorId}/readings
 ```
-
-**3. Get all rooms**
-GET http://localhost:8080/rooms
-
-**4. Get room by ID**
-GET http://localhost:8080/rooms/{roomId}
-
-**5. Create a sensor**
-POST http://localhost:8080/sensors
-
-Body:
+**9. Delete room with sensors - triggers 409 Conflict**
+```bash
+curl -X DELETE http://localhost:8080/rooms/{roomId}
 ```
-{
-    "roomId": "your-room-id",
-    "type": "TEMPERATURE",
-    "status": "ACTIVE"
-}
+**10. Create sensor with invalid roomId - triggers 422**
+```bash
+curl -X POST http://localhost:8080/sensors \
+  -H "Content-Type: application/json" \
+  -d '{"roomId":"INVALID-ID","type":"TEMP","status":"ACTIVE"}'
+```
+**11. Post reading to MAINTENANCE sensor - triggers 403**
+```bash
+curl -X POST http://localhost:8080/sensors/{sensorId}/readings \
+  -H "Content-Type: application/json" \
+  -d '{"value":45,"unit":"ppm"}'
+```
+**12. Get non-existent room - triggers 404**
+```bash
+curl -X GET http://localhost:8080/rooms/FAKE-ID-123
 ```
 
-**6. Create sensor with invalid roomId - triggers 422**
-POST http://localhost:8080/sensors
-
-Body:
-```
-{
-    "roomId": "INVALID-ID",
-    "type": "TEMP",
-    "status": "ACTIVE"
-}
+**13. Get non-existent sensor - triggers 404**
+```bash
+curl -X GET http://localhost:8080/sensors/FAKE-ID-123
 ```
 
 ---
@@ -187,7 +175,7 @@ Because it is far more efficient for common use scenarios, such as rendering a l
 
 In my implementation, DELETE is indeed idempotent. Idempotency is defined by the HTTP protocol as performing the same action more than once and obtaining the same server state.
 
-The first DELETE on a valid room in my code eliminates it and returns 200 OK. Any further DELETE for the same roomId returns 404 Not Found since there isn't a room. After every call, the server state is the same - the room does not exist-despite the different status codes. Repeated DELETE calls do not produce or corrupt any data. The RFC 7231 concept of idempotency is completely satisfied by this.
+The first DELETE on a valid room in my code eliminates it and returns 200 OK. Any further DELETE for the same roomId returns 404 Not Found since there isn't a room. After every call, the server state is the same - the room does not exist - despite the different status codes. Repeated DELETE calls do not produce or corrupt any data. The RFC 7231 concept of idempotency is completely satisfied by this.
 
 ---
 
@@ -203,7 +191,7 @@ This is crucial since it guarantees that the request body is always valid JSON b
 
 Instead of putting the type in the URL path like /sensors/type/TEMPERATURE, I used @QueryParam for the type filter in my implementation, such as GET /sensors?type=TEMPERATURE.
 
-Because query parameters modify what is returned without altering the resource being queried, they are semantically correct for filtering, which is why I picked them. Type/TEMPERATURE is not a distinct, identifiable resource, as a path-based approach would suggest. Additionally, query parameters are composable, so I could easily add more filters like?type=CO2&status=ACTIVE, and they are universally accepted by HTTP clients and cache layers as non-structural modifiers. Because they are optional by design, GET /sensors still functions flawlessly without any filters.
+Because query parameters modify what is returned without altering the resource being queried, they are semantically correct for filtering, which is why I picked them. Type/TEMPERATURE is not a distinct, identifiable resource, as a path-based approach would suggest. Additionally, query parameters are composable, so I could easily add more filters like ?type=CO2&status=ACTIVE, and they are universally accepted by HTTP clients and cache layers as non-structural modifiers. Because they are optional by design, GET /sensors still functions flawlessly without any filters.
 
 ---
 
