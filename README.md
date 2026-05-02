@@ -7,3 +7,9 @@ A RESTful API for managing campus rooms and IoT sensors, built with JAX-RS (Jers
 - **Base URL:** 'http://localhost:8080/'
 - **Technology:** JAX-RS (Jersey 2.41), Grizzly HTTP Server
 - **Storage:** In-memory HashMap and ArrayList - no database
+
+###Endpoints
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | / | Discovery endpoint |
