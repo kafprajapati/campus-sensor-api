@@ -66,3 +66,77 @@ Console ouput when running:
 ```
 
 ---
+## Sample curl Commands
+
+**1. Discovery**
+```bash
+curl -X GET http://localhost:8080/
+```
+
+**2. Create a room**
+```bash
+curl -X POST http://localhost:8080/rooms \
+   -H "Content-Type: application/json" \
+   -d '{"name":"Test Room","location":"Bldg1","floor":1}'
+```
+
+**3. Get all rooms**
+```bash
+curl -X GET http://localhost:8080/rooms
+```
+
+**4. Get room by ID**
+```bash
+curl -X GET http://localhost:8080/rooms/{roomId}
+```
+
+**5. Create a sensor**
+```bash
+curl -X POST http://localhost:8080/sensors \
+   -H "Content-Type: application/json" \
+   -d '{"roomID": {roomId}, "type": "TEMPERATURE", "status":"ACTIVE"}'
+```
+
+**6. Filtor sensors by type**
+```bash
+curl -X GET "http://localhost:8080/sensors?type=TEMPERATURE"
+```
+
+## Sample API Requests
+
+**1. Discovery**
+GET http://localhost:8080/
+
+**2. Create a room**
+POST http://localhost:8080/rooms
+Body:
+{
+    "name": "Test Room",
+    "location": "Bldg1",
+    "floor": 1
+}
+
+**3. Get all rooms**
+GET http://localhost:8080/rooms
+
+**4. Get room by ID**
+GET http://localhost:8080/rooms/{roomId}
+
+**5. Create a sensor**
+POST http://localhost:8080/sensors
+Body:
+{
+    "roomId": "your-room-id",
+    "type": "TEMPERATURE",
+    "status": "ACTIVE"
+}
+
+**6. Create sensor with invalid roomId - triggers 422**
+POST http://localhost:8080/sensors
+Body:
+{
+    "roomId": "INVALID-ID",
+    "type": "TEMP",
+    "status": "ACTIVE"
+}
+
