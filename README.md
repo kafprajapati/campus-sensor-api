@@ -143,7 +143,7 @@ curl -X GET http://localhost:8080/sensors/FAKE-ID-123
 ---
 ## Report - Answers to Questions
 
-*Part 1* - **Q1: In your report, explain the default lifecycle of a JAX-RS Resource class. Is a new instance instantiated for every incoming request, or does the runtime treat it as a singleton? Elaborate on how this architectural decision impacts the way you manage and synchronize your in-memory data structures to prevent data loss or race conditions.**
+*Part 1* - **Q1: Explain the default lifecycle of a JAX-RS Resource class. Is a new instance instantiated for every incoming request, or does the runtime treat it as a singleton? Elaborate on how this architectural decision impacts the way you manage and synchronize your in-memory data structures to prevent data loss or race conditions.**
 
 For each incoming HTTP request, JAX-RS by default generates a new instance of each resource class. The default lifespan defined in the JAX-RS specification is known as per-request scope.
 
