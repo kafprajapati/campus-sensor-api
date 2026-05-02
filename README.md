@@ -109,6 +109,7 @@ GET http://localhost:8080/
 
 **2. Create a room**
 POST http://localhost:8080/rooms
+
 Body:
 {
     "name": "Test Room",
@@ -124,6 +125,7 @@ GET http://localhost:8080/rooms/{roomId}
 
 **5. Create a sensor**
 POST http://localhost:8080/sensors
+
 Body:
 {
     "roomId": "your-room-id",
@@ -133,6 +135,7 @@ Body:
 
 **6. Create sensor with invalid roomId - triggers 422**
 POST http://localhost:8080/sensors
+
 Body:
 {
     "roomId": "INVALID-ID",
