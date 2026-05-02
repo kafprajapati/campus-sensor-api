@@ -143,7 +143,7 @@ Body:
 ---
 ## Report - Answers to Questions
 
-Part 1 - Q1: In your report, explain the default lifecycle of a JAX-RS Resource class. Is a new instance instantiated for every incoming request, or does the runtime treat it as a singleton? Elaborate on how this architectural decision impacts the way you manage and synchronize your in-memory data structures to prevent data loss or race conditions.
+*Part 1* - **Q1: In your report, explain the default lifecycle of a JAX-RS Resource class. Is a new instance instantiated for every incoming request, or does the runtime treat it as a singleton? Elaborate on how this architectural decision impacts the way you manage and synchronize your in-memory data structures to prevent data loss or race conditions.**
 
 For each incoming HTTP request, JAX-RS by default generates a new instance of each resource class. The default lifespan defined in the JAX-RS specification is known as per-request scope.
 
@@ -153,7 +153,7 @@ However, there is a chance that race conditions will arise. A standard LinkedHas
 
 ---
 
-Q2: Why is the provision of Hypermedia (links and navigation within responses) considered a hallmark of advanced RESTful design (HATEOAS)? How does this approach benefit client developers compared to static documentation?
+**Q2: Why is the provision of Hypermedia (links and navigation within responses) considered a hallmark of advanced RESTful design (HATEOAS)? How does this approach benefit client developers compared to static documentation?**
 
 Hypermedia as the Engine of Application State is referred to as HATEOAS. This means that without hardcoding any URLs, API answers contain connections to adjacent resources so that a client can browse the entire API by following those links, just like clicking links on a webpage.
 
@@ -163,7 +163,7 @@ This, in my opinion, is an important indicator of advanced RESTful design since 
 
 ---
 
-Part 2 - Q1: When returning a list of rooms, what are the implications of returning only IDs versus returning the full room objects? Consider network bandwidth and client side processing.
+*Part 2* - **Q1: When returning a list of rooms, what are the implications of returning only IDs versus returning the full room objects? Consider network bandwidth and client side processing.**
 
 Returning just IDs would reduce the size of the response and save bandwidth. The N+1 problem, however, would need the client to make N more questions in order to retrieve the information for each room. For instance, the client would require 101 search requests in total if there were 100 rooms, which would significantly increase latency and server load.
 
@@ -171,7 +171,7 @@ Because it is far more efficient for common use scenarios, such as presenting a 
 
 ---
 
-Q2: Is the DELETE operation idempotent in your implementation? Provide a detailed justification by describing what happens if a client mistakenly sends the exact same DELETE request for a room multiple times.
+**Q2: Is the DELETE operation idempotent in your implementation? Provide a detailed justification by describing what happens if a client mistakenly sends the exact same DELETE request for a room multiple times.**
 
 In my implementation, DELETE is indeed idempotent. Idempotency is defined by the HTTP protocol as performing the same action more than once and obtaining the same server state.
 
@@ -179,7 +179,7 @@ The first DELETE on a valid room in my code eliminates it and returns 200 OK. An
 
 ---
 
-Part 3 - Q1: We explicitly use the @Consumes(MediaType.APPLICATION_JSON) annotation on the POST method. Explain the technical consequences if a client attempts to send data in a different format, such as text/plain or application/xml. How does JAX-RS handle this mismatch?
+*Part 3* - **Q1: We explicitly use the @Consumes(MediaType.APPLICATION_JSON) annotation on the POST method. Explain the technical consequences if a client attempts to send data in a different format, such as text/plain or application/xml. How does JAX-RS handle this mismatch?**
 
 I specified that my POST endpoints only accept requests with Content-Type: application/json by using the @Consumes(MediaType.APPLICATION_JSON) annotation. Before my method body ever runs, Jersey intercepts and rejects the request if a client delivers text/plain or application/xml instead, immediately returning HTTP 415 Unsupported Media Type.
 
@@ -187,7 +187,7 @@ This is crucial since it guarantees that the request body is always valid JSON b
 
 ---
 
-Q2: You implemented this filtering using @QueryParam. Contrast this with an alternative design where the type is part of the URL path (e.g., /api/v1/sensors/type/CO2). Why is the query parameter approach generally considered superior for filtering and searching collections?
+**Q2: You implemented this filtering using @QueryParam. Contrast this with an alternative design where the type is part of the URL path (e.g., /api/v1/sensors/type/CO2). Why is the query parameter approach generally considered superior for filtering and searching collections?**
 
 Instead of putting the type in the URL path like /sensors/type/TEMPERATURE, I used @QueryParam for the type filter in my implementation, such as GET /sensors?type=TEMPERATURE.
 
@@ -195,7 +195,7 @@ Because query parameters modify what is returned without altering the resource b
 
 ---
 
-Part 4 - Q1: Discuss the architectural benefits of the Sub-Resource Locator pattern. How does delegating logic to separate classes help manage complexity in large APIs compared to defining every nested path in one massive controller class?
+*Part 4* - **Q1: Discuss the architectural benefits of the Sub-Resource Locator pattern. How does delegating logic to separate classes help manage complexity in large APIs compared to defining every nested path in one massive controller class?**
 
 In my implementation, I handled the readings endpoints using the Sub-Resource Locator approach. I made a distinct SensorReadingResource class and assigned the /sensors/{id}/readings path to it via a locator method rather than declaring each nested path inside a single, large SensorResource class.
 
@@ -203,8 +203,8 @@ For a number of reasons, I thought such an approach was much better. Initially, 
 
 ---
 
-Part 5 - Q1: Why is HTTP 422 often considered more semantically accurate than a standard 404 when the issue is a missing reference inside a valid JSON payload?
+*Part 5* - **Q1: Why is HTTP 422 often considered more semantically accurate than a standard 404 when the issue is a missing reference inside a valid JSON payload?**
 
-Q2: From a cybersecurity standpoint, explain the risks associated with exposing internal Java stack traces to external API consumers. What specific information could an attacker gather from such a trace?
+**Q2: From a cybersecurity standpoint, explain the risks associated with exposing internal Java stack traces to external API consumers. What specific information could an attacker gather from such a trace?**
 
-Q3: Why is it advantageous to use JAX-RS filters for cross-cutting concerns like logging, rather than manually inserting Logger.info() statements inside every single resource method?
+**Q3: Why is it advantageous to use JAX-RS filters for cross-cutting concerns like logging, rather than manually inserting Logger.info() statements inside every single resource method?**
